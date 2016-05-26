@@ -22,15 +22,17 @@ export default class extends think.controller.base {
 			http.isReaction = true;
 
 			return this.action(controller, action).then(() => {
-				// 有自定义controller
-				think.log(`reaction sucess: ${controller}/${action} ${http.controller}/${http.action}`, 'LOG');
 				return think.prevent();
-			}, (e) => {
+			}).catch((e) => {
+				const log = think.config('view.log');
+
 				if (think.isPrevent(e)) {
+					// 有自定义controller
+					log && think.log(`reaction sucess: ${controller}/${action} ${http.controller}/${http.action}`, 'LOG');
 					return think.prevent();
 				}
 				// 无自定义controller
-				think.log(`reaction fail: ${controller}/${action} ${http.controller}/${http.action}`, 'LOG');
+				log && think.log(`reaction fail: ${controller}/${action} ${http.controller}/${http.action}`, 'LOG');
 			});
 		}
 	}
