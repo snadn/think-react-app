@@ -16,7 +16,7 @@ export function init() {
 		return templateFile;
 	});
 
-	think.hook('view_template', ['react_template'], 'append');
+	think.hook('view_template', ['react_template'], 'prepend');
 }
 
 export default {
