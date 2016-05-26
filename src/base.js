@@ -4,21 +4,17 @@ import React from 'react';
 import { match } from 'react-router';
 
 export default class extends think.controller.base {
-	/**
-	 * some base method in here
-	 */
 	init(http) {
 		super.init(http);
 		this._baseAssigned = true;
 	}
 
 	async __before() {
-		// await super.__before();
-		const controller = this.get('controller') || 'index';
-		const action = this.get('action') || 'index';
 		const http = this.http;
+		const controller = this.get('controller');
+		const action = this.get('action') || 'index';
 
-		if (!http.isReaction) {
+		if (!http.isReaction && controller) {
 			http.isReaction = true;
 
 			return this.action(controller, action).then(() => {
