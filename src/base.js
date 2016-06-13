@@ -67,7 +67,7 @@ export default class extends think.controller.base {
 			urlStr = urlStr.substr(G.root.length) || '/';
 		}
 
-		const location = url.parse(urlStr);
+		const location = url.parse(urlStr, true, true); // query 需要为对象
 
 		match({ routes, location, basename: G.root }, (error, redirectLocation, renderProps) => {
 
