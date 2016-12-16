@@ -1,9 +1,15 @@
 import path from 'path';
 import fs from 'fs';
 import url from 'url';
-import { createElement } from 'react';
-import { renderToString } from 'react-dom/server';
-import { RouterContext } from 'react-router';
+import {
+	createElement
+} from 'react';
+import {
+	renderToString
+} from 'react-dom/server';
+import {
+	RouterContext
+} from 'react-router';
 
 const exists = function(path) {
 	return new Promise((resolve) => {
@@ -34,7 +40,7 @@ export default class extends think.adapter.base {
 	 * @params {Object} config 模版引擎配置
 	 * @return {Promise} []
 	 */
-	async run(templateFile, tVar, config){
+	async run(templateFile, tVar, config) {
 
 		const options = think.parseConfig(think.extend({
 			globalVarName: 'G'
@@ -66,8 +72,8 @@ export default class extends think.adapter.base {
 			html
 		};
 
-		return Object.keys(render).reduce(function(html, key){
-			return html.replace('{{'+key+'}}', render[key]);
+		return Object.keys(render).reduce(function(html, key) {
+			return html.replace('{{' + key + '}}', render[key]);
 		}, base);
 	}
 }

@@ -1,7 +1,9 @@
 import url from 'url';
 import path from 'path';
 import React from 'react';
-import { match } from 'react-router';
+import {
+	match
+} from 'react-router';
 
 export default function(base = think.controller.base) {
 	return class extends base {
@@ -31,17 +33,19 @@ export default function(base = think.controller.base) {
 					// 无自定义controller
 					log && think.log(`reaction fail: ${controller}/${action} ${http.controller}/${http.action}`, 'LOG');
 				});
+			} else {
+				return super.__before && super.__before();
 			}
 		}
 
-		async display(...args) {
+		async display(routesFile, ...args) {
 
 			const {
 				getCreateElement = function(context) {},
-				getRoutes = function(routesFile, context) {
-					return require(routesFile);
-				},
-				...context
+					getRoutes = function(routesFile, context) {
+						return require(routesFile);
+					},
+					...context
 			} = this.assign();
 
 			this._baseAssigned = false;
@@ -49,28 +53,33 @@ export default function(base = think.controller.base) {
 
 			const {
 				globalVarName = 'G',
-				server_render
+					server_render
 			} = think.config('view');
 
 			const G = global[globalVarName];
+			const basename = context.basename || G.root;
 
 			if (!server_render) {
 				super.assign('context', context);
-				return super.display(...args);
+				return super.display(routesFile, ...args);
 			}
 
-			const routesFile = await this.hook('view_template', think.config('view'));
+			routesFile = routesFile || await this.hook('view_template', think.config('view'));
 			const routes = getRoutes(routesFile, context);
 
 			let urlStr = this.http.req.url;
 
-			if (!!G.root && urlStr.indexOf(G.root) === 0) {
-				urlStr = urlStr.substr(G.root.length) || '/';
+			if (!!basename && urlStr.indexOf(basename) === 0) {
+				urlStr = urlStr.substr(basename.length) || '/';
 			}
 
 			// const location = url.parse(urlStr, true, true); // query 需要为对象
 
-			match({ routes, location: urlStr, basename: G.root }, (error, redirectLocation, renderProps) => {
+			match({
+				routes,
+				location: urlStr,
+				basename
+			}, (error, redirectLocation, renderProps) => {
 
 				if (error) {
 					// console.log(500);
@@ -78,14 +87,14 @@ export default function(base = think.controller.base) {
 					return think.statusAction(500, this.http);
 				} else if (redirectLocation) {
 					// console.log(302, redirectLocation.pathname + redirectLocation.search);
-					this.redirect(G.root + redirectLocation.pathname + redirectLocation.search, 302);
+					this.redirect(basename + redirectLocation.pathname + redirectLocation.search, 302);
 				} else if (renderProps) {
 					// console.log(200)
 					renderProps.createElement = getCreateElement(context);
 
 					super.assign('renderProps', renderProps);
 					super.assign('context', context);
-					return super.display(...args);
+					return super.display(routesFile, ...args);
 				} else {
 					// console.log(404)
 					return think.statusAction(404, this.http);
