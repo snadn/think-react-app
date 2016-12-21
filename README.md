@@ -1,6 +1,6 @@
 # think-react-app
 
-thinkjs 插件，在 thinkjs 中使用 react和react-router 来构建同构的 webapp
+thinkjs 插件，在 thinkjs 中使用 react 和 react-router 来构建同构的 webapp
 
 ## 安装
 
@@ -15,28 +15,13 @@ thinkjs 插件，在 thinkjs 中使用 react和react-router 来构建同构的 w
 	reactPlugin.init();
 	```
 
-2. 修改 config/route.js ，将所有请求指向 index
+2. 让 base controller 继承于 'think-react-app/lib/base'，然后使用 `this.display()` 进行渲染
 
-	```javascript
-	export default [
-		// 因最后两个route和base reaction的原因，需要添加白名单
-		[/^(\w+\/)?api(\/.*)$/, ":1api:2"], // 针对 api controller 不做重定向
-		["home/:controller/:action", "home/index/index"],
-		["home/:controller", "home/index/index"],
-
-		// index 是入口 controller
-		[":controller/:action", "home/index/index"],
-		[":controller", "home/index/index"]
-	];
-	```
-
-	ps：针对不需要重定向的url，在头部排除
-
-3. 让 index controller 继承于 'think-react-app/lib/base'，然后使用 `this.display()` 进行渲染
+3. 修改 config/view 的 type 为 react
 
 4. 在 view/home 中放入基于 react-router 的 webapp 代码
 
-	此处入口html文件为 routes.html , routes 配置为 routes.js
+	此处入口 html 文件为 routes.html , routes 配置为 routes.js
 
 	html 中通过 `window.G = {{GStr}};` 将服务器端的数据同步到浏览器端，
 	通过 `<div id="react-wraper">{{html}}</div>` 作为服务端渲染的占位符

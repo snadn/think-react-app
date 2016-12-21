@@ -1,0 +1,16 @@
+{
+  "apps": [{
+    "name": "E:workcodegithubthink-react-appE:workcodegithubthink-react-appdemo",
+    "script": "www/production.js",
+    "cwd": "E:\work\code\github\think-react-app\demo",
+    "exec_mode": "cluster",
+    "instances": 0,
+    "max_memory_restart": "1G",
+    "autorestart": true,
+    "node_args": [],
+    "args": [],
+    "env": {
+      
+    }
+  }]
+}

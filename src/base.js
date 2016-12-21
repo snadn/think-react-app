@@ -43,7 +43,8 @@ export default function(base = think.controller.base) {
 			const {
 				getCreateElement = function(context) {},
 					getRoutes = function(routesFile, context) {
-						return require(routesFile);
+						// 使用 think.require，可处理 es module
+						return think.require(routesFile);
 					},
 					...context
 			} = this.assign();
@@ -54,10 +55,10 @@ export default function(base = think.controller.base) {
 			const {
 				globalVarName = 'G',
 					server_render
-			} = think.config('view');
+			} = think.parseConfig(think.config('view'));
 
-			const G = global[globalVarName];
-			const basename = context.basename || G.root;
+			const G = global[globalVarName] || {};
+			const basename = context.basename || G.root || '/';
 
 			if (!server_render) {
 				super.assign('context', context);

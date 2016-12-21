@@ -6,6 +6,11 @@ export function init() {
 
 	think.middleware('react_template', (http, templateFile) => {
 		if (think.isObject(templateFile)) {
+			templateFile = think.extend({
+				root_path: think.ROOT_PATH + '/view',
+				file_name: 'routes.js'
+			}, think.parseConfig(templateFile));
+
 			if (templateFile.type === 'react') {
 				templateFile = path.normalize(`${templateFile.root_path}/${http.module}/${templateFile.file_name}`);
 			} else {
