@@ -67,6 +67,7 @@ thinkjs 插件，在 thinkjs 中使用 react 和 react-router 来构建同构的
 
 	```
 
+**ps:可以参考demo进行相关配置**
 
 ## 潜规则
 
