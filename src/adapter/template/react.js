@@ -20,10 +20,10 @@ const exists = function(path) {
 };
 const readFile = think.promisify(fs.readFile, fs);
 
-async function getBaseHtml(templateFile) {
+async function getBaseHtml(templateFile, config) {
 	let baseHtml = '{{html}}';
 	let ext = path.extname(templateFile);
-	let file = templateFile.slice(0, -ext.length) + think.config('view').file_ext;
+	let file = templateFile.slice(0, -ext.length) + config.file_ext;
 
 	if (await exists(file)) {
 		baseHtml = await readFile(file, 'utf-8');
@@ -44,7 +44,7 @@ export default class extends think.adapter.base {
 
 		const options = think.parseConfig(think.extend({
 			globalVarName: 'G'
-		}, think.config('view'), config));
+		}, config));
 
 		const {
 			globalVarName: G,
@@ -62,7 +62,7 @@ export default class extends think.adapter.base {
 			html = renderToString(createElement(RouterContext, renderProps));
 		}
 
-		const base = await getBaseHtml(templateFile);
+		const base = await getBaseHtml(templateFile, config);
 
 		const render = {
 			[`${G}Str`]: JSON.stringify({

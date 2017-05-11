@@ -23,7 +23,7 @@ export default function(base = think.controller.base) {
 				return this.action(controller, action).then(() => {
 					return think.prevent();
 				}).catch((e) => {
-					const log = think.config('view.log');
+					const log = this.config('view.log');
 
 					if (think.isPrevent(e)) {
 						// 有自定义controller
@@ -55,7 +55,7 @@ export default function(base = think.controller.base) {
 			const {
 				globalVarName = 'G',
 					server_render
-			} = think.parseConfig(think.config('view'));
+			} = think.parseConfig(this.config('view'));
 
 			const G = global[globalVarName] || {};
 			const basename = context.basename || G.root || '/';
@@ -65,7 +65,7 @@ export default function(base = think.controller.base) {
 				return super.display(routesFile, ...args);
 			}
 
-			routesFile = routesFile || await this.hook('view_template', think.config('view'));
+			routesFile = routesFile || await this.hook('view_template', this.config('view'));
 			const routes = getRoutes(routesFile, context);
 
 			let urlStr = this.http.req.url;
