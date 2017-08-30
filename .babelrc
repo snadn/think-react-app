@@ -1,9 +1,12 @@
 {
 	"presets": [
-		["es2015", {
-			"loose": true
-		}],
-		"stage-1"
+		["env", {
+			"targets": {
+				"node": 4
+			},
+			"loose": true,
+			"modules": "commonjs"
+		}], "stage-1"
 	],
 	"plugins": ["transform-runtime"]
 }

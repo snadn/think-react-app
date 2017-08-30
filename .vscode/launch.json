@@ -8,7 +8,7 @@
 			"type": "node",
 			"request": "launch",
 			"name": "启动程序",
-			"program": "${workspaceRoot}\\demo\\www\\development.js",
+			"program": "${workspaceRoot}/demo/www/development.js",
 			"cwd": "${workspaceRoot}",
 			"sourceMaps": true,
 			"outFiles": [
@@ -19,6 +19,7 @@
 			"type": "node",
 			"request": "attach",
 			"name": "附加到进程",
+			"address": "localhost",
 			"port": 5858
 		}
 	]

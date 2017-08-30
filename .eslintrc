@@ -1,0 +1,6 @@
+{
+	"extends": "eslint-config-iot",
+	"globals": {
+		"think": false
+	}
+}
