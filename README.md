@@ -23,7 +23,7 @@ thinkjs 插件，在 thinkjs 中使用 react 和 react-router 来构建同构的
 
 	此处入口 html 文件为 routes.html , routes 配置为 routes.js
 
-	html 中通过 `window.G = {{GStr}};` 将服务器端的数据同步到浏览器端，
+	html 中通过 `window.G = JSON.parse('{{GStr}}');` 将服务器端的数据同步到浏览器端，
 	通过 `<div id="react-wraper">{{html}}</div>` 作为服务端渲染的占位符
 
 5. 在 www/static/js/ 中创建浏览器端执行脚本 app.js，例如
