@@ -1,8 +1,3 @@
-/* eslint-disable import/no-unresolved,import/extensions */
-import {
-	match,
-} from 'react-router';
-
 export default function(base = think.controller.base) {
 	return class extends base {
 		init(http) {
@@ -49,7 +44,7 @@ export default function(base = think.controller.base) {
 			// const location = url.parse(urlStr, true, true); // query 需要为对象
 
 			return new Promise((resolve) => {
-				match({
+				think.safeRequire('react-router').match({
 					routes,
 					location: urlStr,
 					basename,

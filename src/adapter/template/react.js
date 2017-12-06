@@ -7,9 +7,6 @@ import {
 import {
 	renderToString,
 } from 'react-dom/server';
-import {
-	RouterContext,
-} from 'react-router';
 
 const readFile = think.promisify(fs.readFile, fs);
 
@@ -74,7 +71,7 @@ export default class extends think.adapter.base {
 		let html = '';
 		// eslint-disable-next-line camelcase
 		if (server_render) {
-			html = renderToString(createElement(RouterContext, renderProps));
+			html = renderToString(createElement(think.safeRequire('react-router').RouterContext, renderProps));
 		}
 
 		const base = await getBaseHtml(templateFile, config);
