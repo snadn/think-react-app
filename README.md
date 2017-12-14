@@ -97,3 +97,15 @@ export default {
 	globalVarName: 'G' // 自定义全局变量的名称
 };
 ```
+
+## react-router v4
+
+采用 react-loadable 的方案实现，具体参考：https://github.com/thejameskyle/react-loadable
+
+1. 需在 `view` 配置参数
+```
+bundlesInfo: {}, // 资源信息，有webpack插件生成
+publicPath: '', // 静态资源前缀
+```
+2. 需配置 `babel` 和 `webpack` 使用 `react-loadable` 的插件
+3. 需在模板 html 中添加 `{{css}}` 和 `{{js}}` 占位符

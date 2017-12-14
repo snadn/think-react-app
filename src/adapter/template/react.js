@@ -55,11 +55,15 @@ export default class extends think.adapter.base {
 	async run(templateFile, tVar, config) {
 		const options = think.parseConfig(think.extend({
 			globalVarName: 'G',
+			bundlesInfo: {},
+			publicPath: '',
 		}, config));
 
 		const {
 			globalVarName: G,
 			server_render,
+			bundlesInfo,
+			publicPath,
 		} = options;
 
 		const {
@@ -68,13 +72,50 @@ export default class extends think.adapter.base {
 			renderProps,
 		} = tVar;
 
+		const asset = {};
 		let html = '';
 		// eslint-disable-next-line camelcase
 		if (server_render) {
-			html = renderToString(createElement(think.safeRequire('react-router').RouterContext, renderProps));
+			const { StaticRouter } = think.safeRequire('react-router');
+			const Loadable = think.safeRequire('react-loadable');
+			const { getBundles } = think.safeRequire('react-loadable/webpack');
+
+			const staticContext = {};
+			const modules = [];
+
+			await Loadable.preloadAll();
+
+			html = renderToString(createElement(StaticRouter, {
+				location: renderProps.location,
+				basename: renderProps.basename,
+				context: staticContext,
+				children: createElement(Loadable.Capture, {
+					report(moduleName) {
+						modules.push(moduleName);
+					},
+					children: createElement(renderProps.routes),
+				}),
+			}));
+
+			try {
+				const bundles = getBundles(bundlesInfo, modules);
+				asset.css = bundles
+					.filter(bundle => bundle && bundle.file.endsWith('.css'))
+					.map(style => `<link href="${publicPath}${style.file}" rel="stylesheet"/>`).join('\n');
+				asset.js = bundles
+					.filter(bundle => bundle && bundle.file.endsWith('.js'))
+					.map(script => `<script src="${publicPath}${script.file}"></script>`).join('\n');
+			} catch (e) {
+				console.error(e);
+			}
 		}
 
 		const base = await getBaseHtml(templateFile, config);
+
+		const {
+			css = '',
+			js = '',
+		} = asset;
 
 		const render = {
 			[`${G}Str`]: encode4Js(JSON.stringify({
@@ -82,6 +123,8 @@ export default class extends think.adapter.base {
 				context,
 			})),
 			html,
+			css,
+			js,
 		};
 
 		// eslint-disable-next-line no-shadow

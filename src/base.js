@@ -6,7 +6,6 @@ export default function(base = think.controller.base) {
 		}
 		async display(routesFile, ...args) {
 			const {
-				getCreateElement = function getCreateElement() {},
 				getRoutes = function getRoutes(routesFile, context) { // eslint-disable-line
 					// 使用 think.require，可处理 es module
 					return think.require(routesFile);
@@ -25,9 +24,9 @@ export default function(base = think.controller.base) {
 			const G = global[globalVarName] || {};
 			const basename = context.basename || G.root || '/';
 
+			super.assign('context', context);
 			// eslint-disable-next-line camelcase
 			if (!server_render) {
-				super.assign('context', context);
 				return super.display(routesFile, ...args);
 			}
 
@@ -43,36 +42,12 @@ export default function(base = think.controller.base) {
 
 			// const location = url.parse(urlStr, true, true); // query 需要为对象
 
-			return new Promise((resolve) => {
-				think.safeRequire('react-router').match({
-					routes,
-					location: urlStr,
-					basename,
-				}, (error, redirectLocation, renderProps) => {
-					let result;
-					if (error) {
-						// console.log(500);
-						this.http.error = error;
-						result = think.statusAction(500, this.http);
-					} else if (redirectLocation) {
-						// console.log(302, redirectLocation.pathname + redirectLocation.search);
-						result = this.redirect(basename + redirectLocation.pathname + redirectLocation.search, 302);
-					} else if (renderProps) {
-						// console.log(200)
-
-						super.assign('renderProps', {
-							...renderProps,
-							createElement: getCreateElement(context),
-						});
-						super.assign('context', context);
-						result = super.display(routesFile, ...args);
-					} else {
-						// console.log(404)
-						result = think.statusAction(404, this.http);
-					}
-					resolve(result);
-				});
+			super.assign('renderProps', {
+				routes,
+				location: urlStr,
+				basename,
 			});
+			return super.display(routesFile, ...args);
 		}
 	};
 }
