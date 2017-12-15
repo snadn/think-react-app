@@ -67,7 +67,7 @@ export default class extends think.adapter.base {
 		} = options;
 
 		const {
-			// http,
+			http,
 			context,
 			renderProps,
 		} = tVar;
@@ -98,7 +98,7 @@ export default class extends think.adapter.base {
 			}));
 
 			try {
-				const bundles = getBundles(bundlesInfo, modules);
+				const bundles = getBundles(typeof bundlesInfo === 'function' ? bundlesInfo() : bundlesInfo, modules);
 				asset.css = bundles
 					.filter(bundle => bundle && bundle.file.endsWith('.css'))
 					.map(style => `<link href="${publicPath}${style.file}" rel="stylesheet"/>`).join('\n');
@@ -107,6 +107,12 @@ export default class extends think.adapter.base {
 					.map(script => `<script src="${publicPath}${script.file}"></script>`).join('\n');
 			} catch (e) {
 				console.error(e);
+			}
+
+			if (staticContext.url && staticContext.state >= 300 && staticContext.state < 400) {
+				return http.redirect(staticContext.url, staticContext.state);
+			} else if (staticContext.state >= 400) {
+				return think.statusAction(staticContext.state, http);
 			}
 		}
 

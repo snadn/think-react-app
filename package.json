@@ -1,6 +1,6 @@
 {
 	"name": "think-react-app",
-	"version": "4.0.0",
+	"version": "4.1.0",
 	"description": "use react and react-router build app with thinkjs",
 	"main": "lib/index.js",
 	"scripts": {
